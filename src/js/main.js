@@ -1,7 +1,48 @@
 document.addEventListener('DOMContentLoaded', () => {
+    // Fetch monthly data from backend and update inputs
+    fetch('http://localhost:3010/monthly-data')
+        .then(response => response.json())
+        .then(data => {
+            const months = [
+                'january', 'february', 'march', 'april', 'may', 'june',
+                'july', 'august', 'september', 'october', 'november', 'december'
+            ];
+            data.income.forEach((value, i) => {
+                const incomeInput = document.querySelector(`input[name="${months[i]}-income"]`);
+                if (incomeInput) incomeInput.value = value;
+            });
+            data.expenses.forEach((value, i) => {
+                const expensesInput = document.querySelector(`input[name="${months[i]}-expenses"]`);
+                if (expensesInput) expensesInput.value = value;
+            });
+        });
     const chartTab = document.getElementById('chart-tab');
     let chartInitialized = false;
     let barChart;
+
+    // An array of 20 dog breeds, with the following properties: id, breed_name, breed_temperament.
+    const dogBreeds = [
+        { id: 1, breed_name: 'Labrador Retriever', breed_temperament: 'Friendly' },
+        { id: 2, breed_name: 'German Shepherd', breed_temperament: 'Intelligent' },
+        { id: 3, breed_name: 'Golden Retriever', breed_temperament: 'Friendly' },
+        { id: 4, breed_name: 'Bulldog', breed_temperament: 'Docile' },
+        { id: 5, breed_name: 'Beagle', breed_temperament: 'Curious' },
+        { id: 6, breed_name: 'Poodle', breed_temperament: 'Intelligent' },
+        { id: 7, breed_name: 'Rottweiler', breed_temperament: 'Loyal' },
+        { id: 8, breed_name: 'Yorkshire Terrier', breed_temperament: 'Affectionate' },
+        { id: 9, breed_name: 'Dachshund', breed_temperament: 'Clever' },
+        { id: 10, breed_name: 'Siberian Husky', breed_temperament: 'Energetic' },
+        { id: 11, breed_name: 'Boxer', breed_temperament: 'Playful' },
+        { id: 12, breed_name: 'Shih Tzu', breed_temperament: 'Affectionate' },
+        { id: 13, breed_name: 'Doberman Pinscher', breed_temperament: 'Loyal' },
+        { id: 14, breed_name: 'Chihuahua', breed_temperament: 'Alert' },
+        { id: 15, breed_name: 'Australian Shepherd', breed_temperament: 'Intelligent' },
+        { id: 16, breed_name: 'Corgi', breed_temperament: 'Friendly' },
+        { id: 17, breed_name: 'Mastiff', breed_temperament: 'Gentle' },
+        { id: 18, breed_name: 'Bichon Frise', breed_temperament: 'Playful' },
+        { id: 19, breed_name: 'Pug', breed_temperament: 'Charming' },
+        { id: 20, breed_name: 'Great Dane', breed_temperament: 'Friendly' }
+    ];
 
     chartTab.addEventListener('shown.bs.tab', () => {
         const { income, expenses } = getMonthlyData();
@@ -71,12 +112,19 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Username input validation
     const usernameInput = document.getElementById('username');
-    usernameInput.addEventListener('input', () => {
+    /**
+     * Validates the username input against a specific pattern and updates the input's border color.
+     * The username must be at least 8 characters long, contain at least one uppercase letter,
+     * one digit, and one special character from !@#$%^&*~.
+     * Stores the username in localStorage under the key 'username'.
+     */
+    function usernameInputCallback() {
         const username = usernameInput.value;
         const regex = /^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*~])[A-Za-z\d!@#$%^&*~]{8,}$/;
         usernameInput.style.borderColor = regex.test(username) ? 'green' : 'red';
         localStorage.setItem('username', username);
-    });
+    }
+    usernameInput.addEventListener('input', usernameInputCallback);
 
     // Set username from localStorage on page load
     const storedUsername = localStorage.getItem('username');
